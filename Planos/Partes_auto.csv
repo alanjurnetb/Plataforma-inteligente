@@ -1,0 +1,10 @@
+Numero,Codigo,Descripcion ,Cantidad
+1,P01-D04,Modulo de direccion,1
+2,P01-T04,Modulo de traccion,1
+3,P01-CH04,Modulo de chasis,1
+4,P01-R02,Modulo de radar,1
+5,P01-CT01,Modulo de control,1
+6,P01-TF04-I3D-L04-W20-IF50,Tapa frontal,1
+7,P01-TP04-I3D-L04-W20-IF50,Tapa posterior,1
+8,ISO-1207-M5-X50,Bulon M4X50,10
+9,ISO-1207-M4-X10,Bulon M4X10,20

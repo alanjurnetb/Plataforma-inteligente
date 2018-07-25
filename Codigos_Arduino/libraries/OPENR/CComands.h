@@ -1,0 +1,23 @@
+	
+#define BATTERY A7
+#define SET_MOTOR_SPEED 's'
+#define GET_MOTOR_SPEED 'w'
+#define TURN_STEERING   't'
+#define GET_TURNS       'y'
+#define BATTERY_STATUS	'b'
+#define SET_TURRET_AUTO_MODE 'p'
+#define SET_TURRET_MANUAL_MODE 'm'
+#define GET_RADAR_MEASURES 'r'
+#define RESET_CONTROLLER 'R'
+#define SEND_CAR_NEW_X 'X'  // para mandar los settings hay que armar el siguiente mensaje q1234;1234;1234;1234;1234;1234;1234;1234;1234
+#define SEND_CAR_NEW_Y 'Y'
+#define SEND_CAR_NEW_THETA 'T'
+#define SEND_CAR_X_FILTERED 'D'
+#define SEND_CAR_Y_FILTERED 'E'
+#define SEND_CAR_THETA_FILTERED 'F'
+#define CONTROL_MODE 'P'
+#define NEW_SET_POINT 'S'
+#define CLEAR_GOALS 'C'
+#define START_CONTROL 'G'
+#define STOP_CONTROL 'K'
+#define SEND_CAR_DATA 'L'

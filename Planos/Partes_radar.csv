@@ -1,0 +1,12 @@
+Numero,Codigo,Descripcion ,Cantidad
+1,P01-R02-B02-I3D-L04-W20-IF50,Soporte de sensores movil,1
+2,P01-R02-G02-I3D-L04-W20-IF50,Soporte fijo parte 1,1
+3,P01-R02-G03-I3D-L04-W20-IF50,Soporte fijo parte 2,1
+4,P01-R02-C02-I3D-L04-W20-IF50,Tapa de radar,1
+5,P01-R02-SV02-MG996R,Servo MG996R,1
+6,ISO-1207-M4-X10,Bulon M4X10,4
+7,ISO-1207-M2-X8,Bulon M2X8,4
+8,ISO-1207-M3-X20,Bulon M3X20,2
+9,P01-R02-SHARP-2Y0A02,Sensor SHARP de distancia,5
+10,ISO-1207-M4-X10,Bulon M4X10,7
+11,P01-R02-SV02-AC90,Acople servo 4 puntas,1

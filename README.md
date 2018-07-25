@@ -1,7 +1,7 @@
 # plataforma_autonoma
 <h1>Plataforma modular para desarrollos de conduccion autónoma</h1>
 
-![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-02.jpg?raw=true)
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/photo_2018-07-25_19-28-11.jpg?raw=true)
 
 
 Esta vehículo tiene como objetivo, ser una plataforma modular para desarrollos académicos. Fue diseñada con el objetivo de poder implementar sistemas de control en un vehículo semejante a uno comercial pero a escala 1-10. 
@@ -12,6 +12,7 @@ Es posible comandar el vehículo remotamente desde una base manualmente con un j
 
 <h2>Fabricación:</h2>
 <h3>Mecánica</h3>
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-02.jpg?raw=true)
 Con el objetivo de poder modificar la plataforma para adaptarla a las necesidades futuras se dividió el diseño en tres modulos cada uno mecanicámenete independiente:
 
 <ul>

@@ -19,7 +19,7 @@
 
 ///
 
-#define NEAR_THRESHOLD 1000
+#define NEAR_THRESHOLD 1500
 #define ANGLE_WINDOW 10
 #define MAX_VALLEY_SIZE 0 // EN GRADOS
 

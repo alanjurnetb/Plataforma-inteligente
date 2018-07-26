@@ -141,7 +141,8 @@ void control_system::update_control(float shaftTurns, float theta){
 				new_commands.speed=MAX_SPEED;
 			}
 			double desired_steering=(atan2((next_goal.y-real_time_position.y),(next_goal.x-real_time_position.x)));
-			
+			Serial.println("desired_steering: ");
+			Serial.println(desired_steering*180/PI);
 			double vfh_steering =get_vhf_steering(desired_steering*180/PI)*PI/180;
 
 			// COntrol propocional de giro.
@@ -153,8 +154,8 @@ void control_system::update_control(float shaftTurns, float theta){
 				new_commands.steering=MAX_STEERING_ANGLE;
 			}
 			new_commands.turret_angle=0;//((int)(new_commands.steering)/VFH_WINDOW)*VFH_WINDOW;
-
-	/*		Serial.print("Goal x: ");
+/*
+			Serial.print("Goal x: ");
 			Serial.print(next_goal.x);
 			Serial.print("Goal y: ");
 			Serial.print(next_goal.y);
@@ -169,7 +170,7 @@ void control_system::update_control(float shaftTurns, float theta){
 			Serial.print("\tF steering");
 			Serial.print(vfh_steering*180/PI);
 			Serial.print("\tSteering: ");
-        	Serial.println(new_commands.steering); */ 
+        	Serial.println(new_commands.steering); */
 		}
 	}else{
 		new_commands.speed=0;
@@ -214,21 +215,19 @@ void control_system::update_avoider(float sensor_angle, float distance0,float di
 		for(int i=0;i<VFH_SIZE;i++){		
 			for (int j=0;j<NSENSORS;j++){		
 				if (vf_histogram.angles[i]==turret_angle+(j-2)*SENSOR_ANGLE_SEPEARATION){
-				
-					vf_histogram.histogram[i]=0.3*vf_histogram.histogram[i]+0.7*(SENSOR_RANGE-distance[j]);	
-					//Serial.print("vf_histogram: ");											
-					//Serial.println(vf_histogram.histogram[i]);											
-				}			
+					vf_histogram.histogram[i]=(SENSOR_RANGE-distance[j]);	
+					//vf_histogram.histogram[i]=0.3*vf_histogram.histogram[i]+0.7*(SENSOR_RANGE-distance[j]);	
+									
+				}		
 			}
+			if ((vf_histogram.angles[i]<turret_angle+(-2)*SENSOR_ANGLE_SEPEARATION)||(vf_histogram.angles[i]>turret_angle+(2)*SENSOR_ANGLE_SEPEARATION)){
+				vf_histogram.histogram[i]=SENSOR_RANGE;
+			}
+			//Serial.print(vf_histogram.histogram[i]);
+			//Serial.print("\t");
 		}
+//Serial.println("");
 
-		for(int i=0;i<VFH_SIZE;i++){	
-			if (vf_histogram.angles[i]<turret_angle+(-2)*SENSOR_ANGLE_SEPEARATION || vf_histogram.angles[i]>turret_angle+(2)*SENSOR_ANGLE_SEPEARATION) {
-					vf_histogram.histogram[i]=vf_histogram.histogram[i]+(SENSOR_RANGE-vf_histogram.histogram[i])*0.1;				
-					//Serial.print("vf_histogram: ");											
-					//Serial.println(vf_histogram.histogram[i]);
-			}
-		}
 
 		for(int i=0;i<VFH_SIZE;i++){		
 			for (int j=1;j<NSENSORS;j++){
@@ -236,26 +235,23 @@ void control_system::update_avoider(float sensor_angle, float distance0,float di
 					int counter=0;
 					
 					for (int k=i;k<i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW;k++){
-					/*	Serial.print("Angulo inicial: ");
-						Serial.println(vf_histogram.angles[i]);
-						Serial.print("Angulo final: ");
-						Serial.println(vf_histogram.angles[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW]);
-						Serial.print("Paso: ");
-						Serial.println(k);
-						Serial.print("Paso Angulo: ");
-						Serial.println(vf_histogram.angles[k]);*/
+						
 						if(vf_histogram.histogram[i]>vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW]){					
-							vf_histogram.histogram[k]=0.2*vf_histogram.histogram[k]+0.8*((vf_histogram.histogram[i]-counter*(vf_histogram.histogram[i]-vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW])*1.0/((SENSOR_ANGLE_SEPEARATION*1.0/VFH_WINDOW))));
+							vf_histogram.histogram[k]=((vf_histogram.histogram[i]-counter*(vf_histogram.histogram[i]-vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW])*1.0/((SENSOR_ANGLE_SEPEARATION*1.0/VFH_WINDOW))));
+							//vf_histogram.histogram[k]=0.1*vf_histogram.histogram[k]+0.9*((vf_histogram.histogram[i]-counter*(vf_histogram.histogram[i]-vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW])*1.0/((SENSOR_ANGLE_SEPEARATION*1.0/VFH_WINDOW))));
 						}else{
-							vf_histogram.histogram[k]=0.2*vf_histogram.histogram[k]+0.8*((vf_histogram.histogram[i]+counter*(-vf_histogram.histogram[i]+vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW])*1.0/((SENSOR_ANGLE_SEPEARATION*1.0/VFH_WINDOW))));
+							vf_histogram.histogram[k]=((vf_histogram.histogram[i]+counter*(-vf_histogram.histogram[i]+vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW])*1.0/((SENSOR_ANGLE_SEPEARATION*1.0/VFH_WINDOW))));
+							//vf_histogram.histogram[k]=0.1*vf_histogram.histogram[k]+0.9*((vf_histogram.histogram[i]+counter*(-vf_histogram.histogram[i]+vf_histogram.histogram[i+SENSOR_ANGLE_SEPEARATION/VFH_WINDOW])*1.0/((SENSOR_ANGLE_SEPEARATION*1.0/VFH_WINDOW))));
 						}
 						counter++;
 					}
 				}
 			}
+			//Serial.print(vf_histogram.angles[i]);
+			//Serial.print("\t");
 		}
-	
-		Serial.println("Update");
+		//Serial.println("");
+		//Serial.println("Update");
 
 }
 
@@ -285,15 +281,20 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 				valley_detected[index].min_angle=valley_detected[index].max_angle;
 			}
 			new_valley=false;
-			Serial.print("Min_angle: ");
-			Serial.println(valley_detected[index].min_angle);
-			Serial.print("Max_angle: ");
-			Serial.println(valley_detected[index].max_angle);
+			//Serial.print("Min_angle: ");
+			//Serial.println(valley_detected[index].min_angle);
+			//Serial.print("Max_angle: ");
+			//Serial.println(valley_detected[index].max_angle);
 			index++;
 		}
-
-
+	/*	if (vf_histogram.histogram[i]<NEAR_THRESHOLD){
+			Serial.print(1);
+		}else{
+			Serial.print(0);
+		}
+		Serial.print("\t");*/
 	}
+	//Serial.print("\n");
 
 	for (int i=0;i<VFH_SIZE-1;i++){
 		if(goal_steering_angle>=vf_histogram.angles[i]&&goal_steering_angle<=vf_histogram.angles[i+1]){
@@ -330,10 +331,10 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 		float min;
 		if (d1<d2){
 			min=d1;
-			return(0.7*valley_detected[index].min_angle+0.3*valley_detected[i].max_angle);		
+			return(0.8*valley_detected[index].min_angle+0.2*valley_detected[i].max_angle);		
 		}else{
 			min=d2;
-			return(0.3*valley_detected[index].min_angle+0.7*valley_detected[i].max_angle);		
+			return(0.2*valley_detected[index].min_angle+0.8*valley_detected[i].max_angle);		
 		}
 		if (min < last_min && valley_detected[i].size>1){
 			nearer_valley=valley_detected[i];	

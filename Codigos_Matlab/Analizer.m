@@ -16,7 +16,7 @@ radarData=zeros(samples,5);
 wait_connection(auto);
 display('connection succes')
 stop_car(auto)
-set_goal(auto,[3 -0.5]);
+set_goal(auto,[0 -3]);
 start_car(auto);
 
 %%
@@ -31,8 +31,8 @@ start_car(auto);
         figure(1)
         scatter(carData(i,1),carData(i,2));
         hold on;
-        plot([carData(i,1),carData(i,1)+1000*cos(carData(i,3)*pi/180)],[carData(i,2),carData(i,2)+1000*sin(carData(i,3)*pi/180)]);
-        hold on;
+%         plot([carData(i,1),carData(i,1)+1000*cos(carData(i,3)*pi/180)],[carData(i,2),carData(i,2)+1000*sin(carData(i,3)*pi/180)]);
+%         hold on;
         scatter([carData(i,1)+1000*cos(carData(i,3)*pi/180)],[carData(i,2)+1000*sin(carData(i,3)*pi/180)]);
         hold on;
         for j=1:5
@@ -43,7 +43,7 @@ start_car(auto);
         axis([-5000 5000 -5000 5000])
          pause(0.1);
 
-%         hold off
+        hold off
     %end
  end
 
@@ -56,12 +56,13 @@ hold off
             axis([-0 4000 -4000 4000])
             axis equal
 
+     hold on;
+%      plot([carData(1:1000,1),carData(1:1000,1)+1000*cos(carData(1:1000,3)*pi/180)],[carData(1:1000,2),carData(1:1000,2)+1000*sin(carData(1:1000,3)*pi/180)]);
 %     hold on;
-%     plot([carData(i,1),carData(i,1)+1000*cos(carData(i,3)*pi/180)],[carData(i,2),carData(i,2)+1000*sin(carData(i,3)*pi/180)]);
+    scatter([carData(1:1000,1)+1000*cos(carData(1:1000,3)*pi/180)],[carData(1:1000,2)+1000*sin(carData(1:1000,3)*pi/180)]);
 %     hold on;
-%     scatter([carData(i,1)+1000*cos(carData(i,3)*pi/180)],[carData(i,2)+1000*sin(carData(i,3)*pi/180)]);
-%     hold on;
-%     for j=1:5
+% for i=1:1000
+%      for j=1:5
 %         plot([carData(i,1),carData(i,1)+radarData(i,j)*cos((carData(i,3)+(-90-(j-5)*45))*pi/180)],[carData(i,2),carData(i,2)+radarData(i,j)*sin((carData(i,3)+(-90-(j-5)*45))*pi/180)]);
 %         hold on;
 %     end

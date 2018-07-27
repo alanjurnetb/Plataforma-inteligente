@@ -220,6 +220,9 @@ void control_system::update_avoider(float sensor_angle, float distance0,float di
 		distance[0]=distance4;
 
 		turret_angle=((int)(sensor_angle*180.0/PI+new_commands.turret_angle)/2/VFH_WINDOW)*VFH_WINDOW;
+		turret_angle=0;
+		Serial.println("turret_angle");
+		Serial.println(turret_angle);
 		force_field_vector.x=0;
 		force_field_vector.y=0;
 		for (int i=0;i<VFH_SIZE;i++){
@@ -237,10 +240,10 @@ void control_system::update_avoider(float sensor_angle, float distance0,float di
 			if ((vf_histogram.angles[i]<turret_angle+(-2)*SENSOR_ANGLE_SEPEARATION)||(vf_histogram.angles[i]>turret_angle+(2)*SENSOR_ANGLE_SEPEARATION)){
 				vf_histogram.histogram[i]=SENSOR_RANGE;
 			}
-			//Serial.print(vf_histogram.histogram[i]);
-			//Serial.print("\t");
+			Serial.print(vf_histogram.histogram[i]);
+			Serial.print("\t");
 		}
-//Serial.println("");
+		Serial.println("");
 
 
 		for(int i=0;i<VFH_SIZE;i++){		
@@ -301,14 +304,14 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 			//Serial.println(valley_detected[index].max_angle);
 			index++;
 		}
-	/*	if (vf_histogram.histogram[i]<NEAR_THRESHOLD){
+		if (vf_histogram.histogram[i]<NEAR_THRESHOLD){
 			Serial.print(1);
 		}else{
 			Serial.print(0);
 		}
-		Serial.print("\t");*/
+		Serial.print("\t");
 	}
-	//Serial.print("\n");
+	Serial.print("\n");
 
 	for (int i=0;i<VFH_SIZE-1;i++){
 		if(goal_steering_angle>=vf_histogram.angles[i]&&goal_steering_angle<=vf_histogram.angles[i+1]){
@@ -317,10 +320,10 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 				return(goal_steering_angle);			
 			}
 		}
-		//Serial.print(vf_histogram.angles[i]);
-		//Serial.print("\t");
+		Serial.print(vf_histogram.angles[i]);
+		Serial.print("\t");
 	}
-	//Serial.print("\n");
+	Serial.print("\n");
 
 	Serial.print("Zonas: ");
 	Serial.println(index);
@@ -354,16 +357,16 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 			stated=0;
 		}
 	}
-
+/*
 	Serial.print("Ponde: ");
 	Serial.println(ponde);
 	if (valley_detected[biggest_valley].min_angle<=goal_steering_angle && valley_detected[biggest_valley].max_angle>=goal_steering_angle ){
 		return(goal_steering_angle);
 	}else{
 		return(ponde);
-	}
+	}*/
 
-/*
+
 	for (int i=0;i<index;i++){
 		Serial.println("Min angle:");
 		Serial.println(valley_detected[i].min_angle);
@@ -373,27 +376,26 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 		Serial.println(goal_steering_angle);
 		if (valley_detected[i].min_angle<=goal_steering_angle && valley_detected[i].max_angle>=goal_steering_angle ){
 			Serial.println("El goal esta dentro del valley");
-			//if((valley_detected[i].max_angle-valley_detected[i].min_angle)>=MAX_VALLEY_SIZE){
+			if((valley_detected[i].max_angle-valley_detected[i].min_angle)>=MAX_VALLEY_SIZE){
 				return(goal_steering_angle);
-	//		}else{
-	//			return((valley_detected[i].min_angle+valley_detected[i].max_angle)/2);
-	//		}
+			}else{
+				return((valley_detected[i].min_angle+valley_detected[i].max_angle)/2);
+			}
 		}
-	}*/
+	}
 	float last_min=10000;
 
 	for (int i=0;i<index;i++){
 		float d1=sqrt(pow(valley_detected[i].min_angle-goal_steering_angle,2));
 		float d2=sqrt(pow(valley_detected[i].max_angle-goal_steering_angle,2));
 		float min;
-		if (d1<d2){
-			min=d1;
-			return(0.8*valley_detected[index].min_angle+0.2*valley_detected[i].max_angle);		
-		}else{
+		if (d1>d2){
 			min=d2;
-			return(0.2*valley_detected[index].min_angle+0.8*valley_detected[i].max_angle);		
+		}else{
+			min=d1;
 		}
-		if (min < last_min && valley_detected[i].size>1){
+
+		if (min < last_min && valley_detected[i].size>=1){
 			nearer_valley=valley_detected[i];	
 			last_min=min;
 		}
@@ -404,11 +406,11 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 	Serial.print("\tmax_angle: ");
 	Serial.println(nearer_valley.max_angle);
 
-	Serial.println("Not even one valley");
+	//Serial.println("Not even one valley");
 
-	if (index ==0){
-		return((valley_detected[index].min_angle+valley_detected[index].max_angle)/2);		
-	}else{
+	//if (index ==0){
+		//return((valley_detected[index].min_angle+valley_detected[index].max_angle)/2);		
+	//}else{
 		return((nearer_valley.min_angle+nearer_valley.max_angle)/2);		
-	}
+//	}
 }

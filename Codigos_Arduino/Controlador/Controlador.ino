@@ -39,12 +39,12 @@ void loop() {
   static long last_update=0;
   long now=millis();
   
-  if (new_data && now-last_update>1){
+  //if (new_data && now-last_update>1){
     goal_controller->update_avoider(cardata.sensor_angle,cardata.distance[0],cardata.distance[1],cardata.distance[2],cardata.distance[3],cardata.distance[4]);
     goal_controller->update_control(cardata.shaft_turns,cardata.heading);
     new_data=false;
     last_update=now;
-  }
+  //}
 }
 
 void get_commands(){

@@ -14,8 +14,9 @@
 serialManager *manager_serial;
 rf_communication *rf24;
 long lastdatatime;
-
+car_data real_data;
 bool remote_control=false;
+bool connected_rf=false;
 
 void setup() {
   // put your setup code here, to run once:
@@ -27,7 +28,7 @@ void setup() {
   rf24->add_callback(show_turns,GET_TURNS);
   rf24->add_callback(show_motor_speed,GET_MOTOR_SPEED);
   rf24->add_callback(show_battery_status,BATTERY_STATUS);
-  rf24->add_car_data_callback(show_car_data);
+  rf24->add_car_data_callback(get_car_data);
   rf24->add_callback(set_turret_manual_mode,SET_TURRET_MANUAL_MODE);
   rf24->add_callback(set_turret_auto_mode,SET_TURRET_AUTO_MODE);
   rf24->add_callback(reset_controller,RESET_CONTROLLER);
@@ -53,6 +54,7 @@ void setup() {
   manager_serial->add_callback(send_fil_y,SEND_CAR_Y_FILTERED);
   manager_serial->add_callback(send_fil_theta,SEND_CAR_THETA_FILTERED);
   manager_serial->add_callback(control_mode,CONTROL_MODE);
+  manager_serial->add_callback(show_car_data,SHOW_ALL_DATA);
 
   manager_serial->add_callback(push_new_set_point,NEW_SET_POINT);
   manager_serial->add_callback(clear_goals,CLEAR_GOALS);
@@ -113,74 +115,84 @@ void loop() {
 
 void push_new_set_point(float data){
   Serial.println("Pushing new point");
+  
   rf24->send_message(NEW_SET_POINT,data);
+  Serial.println("Ready");  
 }
 void clear_goals(float data){
+  Serial.println("Clear_goals");
   
   rf24->send_message(CLEAR_GOALS,data);
+  Serial.println("Ready");  
 }
 void start_control(float data){
-  
+  Serial.println("start_control");   
   rf24->send_message(START_CONTROL,data);
+  Serial.println("Ready"); 
 }
 void stop_control(float data){
-  
+  Serial.println("stop_control");
   rf24->send_message(STOP_CONTROL,data);
+  Serial.println("Ready");  
 }
 
 void send_new_x(float data){
   Serial.print("Setear new x: ");
   Serial.print(data);
   Serial.println(" m");  
+  
   rf24->send_message(SEND_CAR_NEW_X,data);
+  Serial.println("Ready");  
 }
 
 void send_new_y(float data){
-    Serial.print("Setear new y: ");
+  Serial.print("Setear new y: ");
   Serial.print(data);
   Serial.println(" m");  
+  
   rf24->send_message(SEND_CAR_NEW_Y,data);
+  Serial.println("Ready");  
 }
 
 void send_new_theta(float data){
-  Serial.print("Setear new theta: ");
-  Serial.print(data);
-  Serial.println(" m");   
+  //Serial.print("Setear new theta: ");
+  //Serial.print(data);
+  //Serial.println(" m");   
   rf24->send_message(SEND_CAR_NEW_THETA,data);
 }
 
 
 void send_fil_x(float data){
-  Serial.print("Setear filtered x: ");
-  Serial.print(data);
-  Serial.println(" m");  
+  //Serial.print("Setear filtered x: ");
+  //Serial.print(data);
+  //Serial.println(" m");  
   rf24->send_message(SEND_CAR_X_FILTERED,data);
 }
 
 void send_fil_y(float data){
-  Serial.print("Setear filtered y: ");
-  Serial.print(data);
-  Serial.println(" m");    
+  //Serial.print("Setear filtered y: ");
+  //Serial.print(data);
+  //Serial.println(" m");    
   rf24->send_message(SEND_CAR_Y_FILTERED,data);
 }
 
 void send_fil_theta(float data){
-    Serial.print("Setear filtered theta: ");
-  Serial.print(data);
-  Serial.println(" grads");   
+  //Serial.print("Setear filtered theta: ");
+  //Serial.print(data);
+  //Serial.println(" grads");   
   rf24->send_message(SEND_CAR_THETA_FILTERED,data);
 }
 void control_mode(float data){
-    Serial.print("Setear modo de control: ");
-  Serial.print(data);
-  Serial.println(" n modo"); 
+  //Serial.print("Setear modo de control: ");
+  //Serial.print(data);
+    //Serial.println(" n modo"); 
   rf24->send_message(CONTROL_MODE,data);
 }
 
 
 void set_motor_speed(float speed){
-   Serial.print("Sending speed");
-  Serial.println(speed);
+  //Serial.print("Sending speed");
+  //Serial.println(speed);
   rf24->send_message(SET_MOTOR_SPEED,speed);
   
 }
@@ -202,13 +214,14 @@ void get_battery_status(float data){
 }
 
 void set_turret_manual_mode(float data){
-Serial.print("Moviendo torre a: ");
-Serial.println(data);
+  //Serial.print("Moviendo torre a: ");
+  //Serial.println(data);
   rf24->send_message(SET_TURRET_MANUAL_MODE,data);
 }
 void reset_controller(float data){
-  Serial.println("Reseteando datos");
+  //Serial.println("Reseteando datos");
   rf24->send_message(RESET_CONTROLLER,data);
+  Serial.println("Ready");  
 }
 
 void set_turret_auto_mode(float data){
@@ -218,24 +231,25 @@ void set_turret_auto_mode(float data){
 
 
 void show_turns(float data){
-  Serial.print("Vueltas: ");
-  Serial.println(data);
+  /*Serial.print("Vueltas: ");
+  Serial.println(data);*/
 }
 
 void show_motor_speed(float data){
-  Serial.print("Velocidad: ");
+  /*Serial.print("Velocidad: ");
   Serial.print(data);
-  Serial.println(" RPM");
+  Serial.println(" RPM");*/
 }
 
 void show_battery_status(float data){
-  Serial.print("Bateria: ");
+ /* Serial.print("Bateria: ");
   Serial.print(data);
-  Serial.println(" V");
+  Serial.println(" V");*/
 }
 
 void get_radar_measures(float data){
   rf24->send_message(GET_RADAR_MEASURES,data);
+  
 }
 
 /*void send_carsettings(car_data_imposed_serial data){
@@ -267,22 +281,36 @@ void get_radar_measures(float data){
   temp.x_position_goal = data.x_position_goal ;
   temp.y_position_goal =data.y_position_goal ;
   temp.theta_heading_goal =data.theta_heading_goal;
-  
+ 
   rf24->send_car_settings(temp);
 }*/
+
+void get_car_data(car_data data){
+  real_data=data;
+  if(!connected_rf){
+    Serial.println("OK");  
+    connected_rf=true;
+  }
+  //show_car_data(data);
+  
+  //Serial.println(data.x_position);
+}
 
 void show_car_data(car_data data){
   //Serial.println("---------- Auto --------------");
 //  Serial.print("Angulo de giro: ");
-  Serial.print("Car\t");
-  Serial.print(data.x_position);
-  Serial.print(" \t");
+  //Serial.println("Car:\t");
+  Serial.println("C0:");
+  Serial.println(real_data.x_position);
+  //Serial.print(" \t");
   //Serial.print(" \tVueltas de eje: ");
-  Serial.print(data.y_position);
-  Serial.print(" \t");
-    Serial.println(data.theta_heading);
-/*  Serial.print("Turret\t");
-  Serial.print(data.time_stamp);  
+  Serial.println("C1:");
+  Serial.println(real_data.y_position);
+  //Serial.print(" \t");
+  Serial.println("C2:");
+  Serial.println(real_data.theta_heading);
+  //Serial.println("Radar:\t");
+/*  Serial.print(data.time_stamp);  
 
   Serial.print(" \t");
   Serial.print(data.sensor_angle,4);
@@ -290,14 +318,14 @@ void show_car_data(car_data data){
 /*
  //// Serial.print("Angulo de torreta: ");
  // Serial.println(data.center_angle);
- // Serial.println("------- Sensores --------");
+ // Serial.println("------- Sensores --------");*/
   for (int i=0;i<5;i++){
-    //Serial.print("S");
-   // Serial.print(i);
-    //Serial.print(": ");
-    Serial.print(data.distance[i]);
-    Serial.print("\t");
+    Serial.print("R");
+    Serial.print(i);
+    Serial.println(":");
+    Serial.println(real_data.distance[i]);
+    //Serial.print("\t");
   }
-  Serial.println("");*/
+  //Serial.println("");  
 }
 

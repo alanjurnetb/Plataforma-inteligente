@@ -134,27 +134,41 @@ void control_system::update_control(float shaftTurns, float theta){
 		
 		if (mode==POINT){
 			
-				new_commands.speed=SPEED_KP*sqrt(pow(next_goal.x-real_time_position.x,2)+pow(next_goal.y-real_time_position.y,2));	
+			new_commands.speed=SPEED_KP*sqrt(pow(next_goal.x-real_time_position.x,2)+pow(next_goal.y-real_time_position.y,2));	
 			
 			
 			if (new_commands.speed>MAX_SPEED){
 				new_commands.speed=MAX_SPEED;
 			}
-			double desired_steering=(atan2((next_goal.y-real_time_position.y),(next_goal.x-real_time_position.x)));
+			double desired_steering=(atan2((next_goal.y-real_time_position.y),(next_goal.x-real_time_position.x)))-real_time_position.theta;
 			Serial.println("desired_steering: ");
 			Serial.println(desired_steering*180/PI);
 			double vfh_steering =get_vhf_steering(desired_steering*180/PI)*PI/180;
 
-			// COntrol propocional de giro.
-			new_commands.steering=((vfh_steering-real_time_position.theta*3.1415/180)*TURN_FACTOR*180.0f/3.1415)*STEERING_KP;// considerar que el comando para el servo es negativo
-			
-			if ((new_commands.steering/TURN_FACTOR)<MIN_STEERING_ANGLE){
-				new_commands.steering=MIN_STEERING_ANGLE;
-			}else if((new_commands.steering/TURN_FACTOR)>MAX_STEERING_ANGLE){
-				new_commands.steering=MAX_STEERING_ANGLE;
+/*			// COntrol propocional de giro.
+			double error_steering=((vfh_steering-real_time_position.theta*3.1415/180)*TURN_FACTOR*180.0f/3.1415);
+			static double sum_error=0;
+			sum_error+=error_steering;
+			Serial.println("error_steering: ");
+			Serial.println(error_steering);
+
+			double buffer=new_commands.steering+error_steering*STEERING_KP+sum_error*STEERING_KI;// considerar que el comando para el servo es negativo*/
+			double buffer=vfh_steering*180/PI;
+			//double buffer=(desired_steering*180/PI);			
+			if (buffer>=MIN_STEERING_ANGLE &&buffer<=MAX_STEERING_ANGLE){
+				new_commands.steering=buffer;
+			}else{
+				if (buffer<MIN_STEERING_ANGLE){
+					new_commands.steering=MIN_STEERING_ANGLE;
+				}else if(buffer<=MAX_STEERING_ANGLE){
+					new_commands.steering=MAX_STEERING_ANGLE;
+				}
 			}
+
+			
+
 			new_commands.turret_angle=0;//((int)(new_commands.steering)/VFH_WINDOW)*VFH_WINDOW;
-/*
+
 			Serial.print("Goal x: ");
 			Serial.print(next_goal.x);
 			Serial.print("Goal y: ");
@@ -170,7 +184,7 @@ void control_system::update_control(float shaftTurns, float theta){
 			Serial.print("\tF steering");
 			Serial.print(vfh_steering*180/PI);
 			Serial.print("\tSteering: ");
-        	Serial.println(new_commands.steering); */
+        	Serial.println(new_commands.steering); 
 		}
 	}else{
 		new_commands.speed=0;
@@ -303,10 +317,53 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 				return(goal_steering_angle);			
 			}
 		}
+		//Serial.print(vf_histogram.angles[i]);
+		//Serial.print("\t");
 	}
+	//Serial.print("\n");
 
 	Serial.print("Zonas: ");
 	Serial.println(index);
+
+	// Busco el valley mas grande
+	int biggest_valley=0;
+	int valley_size_buffer=0;
+	for (int i=0;i<index;i++){
+		if (valley_detected[i].size>valley_size_buffer){
+			valley_size_buffer=valley_detected[i].size;
+			biggest_valley=i;
+		}
+	}
+	Serial.print("biggest_valley: ");
+	Serial.println(biggest_valley);
+
+	// Pondero los valores del valle y elijo ese promedio
+	int stated=0;
+	double ponde=0;
+	double sumweigth=0;
+	for (int i=0;i<VFH_SIZE-1;i++){
+		if (vf_histogram.angles[i]==valley_detected[biggest_valley].max_angle && stated==0){
+			stated=1;
+		
+		}
+		if(stated==1 && valley_detected[biggest_valley].min_angle <=vf_histogram.angles[i]) {
+			ponde=ponde+vf_histogram.angles[i]*(SENSOR_RANGE-vf_histogram.histogram[i]);
+			sumweigth=sumweigth+SENSOR_RANGE-vf_histogram.histogram[i];
+		}else if(stated==1 &&valley_detected[biggest_valley].min_angle >vf_histogram.angles[i]){
+			ponde=ponde/sumweigth;
+			stated=0;
+		}
+	}
+
+	Serial.print("Ponde: ");
+	Serial.println(ponde);
+	if (valley_detected[biggest_valley].min_angle<=goal_steering_angle && valley_detected[biggest_valley].max_angle>=goal_steering_angle ){
+		return(goal_steering_angle);
+	}else{
+		return(ponde);
+	}
+
+/*
 	for (int i=0;i<index;i++){
 		Serial.println("Min angle:");
 		Serial.println(valley_detected[i].min_angle);
@@ -322,7 +379,7 @@ double control_system::get_vhf_steering(double goal_steering_angle){
 	//			return((valley_detected[i].min_angle+valley_detected[i].max_angle)/2);
 	//		}
 		}
-	}
+	}*/
 	float last_min=10000;
 
 	for (int i=0;i<index;i++){

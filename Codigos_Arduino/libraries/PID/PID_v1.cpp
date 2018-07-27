@@ -65,7 +65,7 @@ bool PID::Compute()
    unsigned long timeChange = (now - lastTime);
    if(timeChange>=SampleTime)
    {
-      Serial.println("Compute");
+      //Serial.println("Compute");
       /*Compute all the working error variables*/
       double input = *myInput;
       double error = *mySetpoint - input;
@@ -90,8 +90,8 @@ bool PID::Compute()
 
       /*Compute Rest of PID Output*/
       output += outputSum - kd * dInput;
-      Serial.print("\tOutput: ");
-      Serial.println(output);
+     // Serial.print("\tOutput: ");
+      //Serial.println(output);
 	    if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
 	    *myOutput = output;

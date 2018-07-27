@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 #define GOAL_POINTS 3
-#define GOAL_POSITION_ERROR 1 // en metros
+#define GOAL_POSITION_ERROR 0.5 // en metros
 #define MAX_SPEED 150
 #define MAX_BACK_SPEED -200
 #define MIN_STEERING_ANGLE -45
@@ -13,13 +13,15 @@
 #define SENSOR_ANGLE_SEPEARATION 45
 #define WHEEL_DIAMETER 80 //mm
 #define SPEED_KP 200
-#define STEERING_KP 1
+#define STEERING_KP 0.1
+#define STEERING_KI 0.0001
 #define VFH_SIZE 25
 #define VFH_WINDOW 15
 
 ///
+#define DISTANCE_REACTION 500
 
-#define NEAR_THRESHOLD 1500
+#define NEAR_THRESHOLD (SENSOR_RANGE-DISTANCE_REACTION)
 #define ANGLE_WINDOW 10
 #define MAX_VALLEY_SIZE 0 // EN GRADOS
 

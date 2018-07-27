@@ -81,28 +81,31 @@ void rf_communication::start(){
 }
 
 void rf_communication::update(void){
-  if(radio_module->available()) {
-    radio_module->read(&incoming, sizeof(RF_packet));
-    //Serial.print("Nuevo mensaje: ");
-    if (incoming.short_message.data_size<=sizeof(command_payload)+1){
-      //Serial.println(incoming.short_message.command);    
-      for (int i=0;i<commands_configured;i++){
-            if (trigger_commands[i]==incoming.short_message.command){           
-    /*          Serial.print("Indice: ");
-              Serial.print(i);
-              Serial.print(" Comando: ");
-              Serial.print(incoming.short_message.command);
-              Serial.print(" Data: ");
-              Serial.println(incoming.short_message.data);
-              */
-              trigger_functions[i](incoming.short_message.data);
+  //static long lastread=0;
+  //if (micros()-lastread>2000){
+    //Serial.println("Chequenado mensaje");
+    if(radio_module->available()) {
+      radio_module->read(&incoming, sizeof(RF_packet));
+      //Serial.print("Nuevo mensaje: ");
+      if (incoming.short_message.data_size<=sizeof(command_payload)+1){
+     //   Serial.println(incoming.short_message.command);    
+        for (int i=0;i<commands_configured;i++){
+              if (trigger_commands[i]==incoming.short_message.command){           
+            /*    Serial.print("Indice: ");
+                Serial.print(i);
+                Serial.print(" Comando: ");
+                Serial.print(incoming.short_message.command);
+                Serial.print(" Data: ");
+                Serial.println(incoming.short_message.data);  */            
+                trigger_functions[i](incoming.short_message.data);
+              }
             }
-          }
-      new_com=true;
-    }else{
-      trigger_function_long(incoming.long_message);
+        new_com=true;
+      }else{
+        trigger_function_long(incoming.long_message);
+      }
     }
-  }
+
 }
 
 bool rf_communication::get_connection(void){
@@ -115,6 +118,11 @@ bool rf_communication::get_connection(void){
 }
 
 void rf_communication::send_message(unsigned char command, float data){
+  static long lastread=0;
+  while(millis()-lastread<50){
+    
+  }
+  lastread=millis();
   radio_module->stopListening();
   if (module_mode == SLAVE){
     radio_module->openWritingPipe(pipes[0]);

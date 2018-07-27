@@ -32,17 +32,17 @@ void serialManager::update(){
 		for (int i=0;i<commands_configured;i++){
 			if (trigger_commands[i]==incomingByte){
 				//if(Serial.peek()=='-'){
-//					incomingData=-Serial.parseFloat();
+//				incomingData=-Serial.parseFloat();
 				//}else{
-					incomingData=Serial.parseFloat();
+				incomingData=Serial.parseFloat();
 				//}
-				//Serial.print("Indice: ");
-				//Serial.print(i);
+/*				Serial.print("Indice: ");
+				Serial.print(i);
 				
-				//Serial.print(" Comando: ");
-				//Serial.print(incomingByte);
-				//Serial.print(" Data: ");
-				//Serial.println(incomingData);
+				Serial.print(" Comando: ");
+				Serial.print(incomingByte);
+				Serial.print(" Data: ");
+				Serial.println(incomingData);*/
 				
 				trigger_functions[i](incomingData);
 			}

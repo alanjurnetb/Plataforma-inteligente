@@ -21,3 +21,4 @@
 #define START_CONTROL 'G'
 #define STOP_CONTROL 'K'
 #define SEND_CAR_DATA 'L'
+#define SHOW_ALL_DATA 'H'

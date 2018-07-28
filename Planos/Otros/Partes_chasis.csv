@@ -1,4 +1,2 @@
-Numero,Codigo,Descripcion ,Cantidad
-1,P01-CH04-I3D-L04-W20-IF50,Chasis,1
-3,P01-CH04-ESC-MAX10,Driver del motor MAX 10 ,1
-2,P01-CH04-BAT-5000MAH-REACTION,Bateria 5000 mAh,1
+Comando ,Alias,Funcion
+ISO-1207-M3-X25,Bulon M3X25,

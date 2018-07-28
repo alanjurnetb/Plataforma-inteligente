@@ -1,5 +1,4 @@
 #include "radar.h"
-//#include "serialParser.h"
 #include "Wire.h"
 #include "CComands.h"
   
@@ -8,7 +7,6 @@
 #define ADDRESS 8
 
 redgrey_radar *radar;
-//serialManager *manager_serial;
 
 I2C_sensor_request sensor_measures;
 I2C_communication *radar_com;
@@ -37,12 +35,6 @@ Serial.println("Radar");
   Wire.onReceive(get_commands);  
   Serial.println("Ready i2c_com");
     
-  /*Serial.println("New Serial manager");
-  manager_serial = new serialManager();
-  manager_serial->add_callback(manual,SET_TURRET_MANUAL_MODE);
-  manager_serial->add_callback(automatic_mode,SET_TURRET_AUTO_MODE);  
-  manager_serial->add_callback(get_distances,GET_RADAR_MEASURES); 
-  Serial.println("Ready");*/
   
   
 }
@@ -53,8 +45,6 @@ void loop() {
  get_measures();
  radar_com->update_I2C_sensordata(sensor_measures);
 
-// manager_serial->update();
-// get_distances();  
  if (radar_mode==false && radar_new_mode==true){
   automatic_mode(new_angle);
   radar_mode=true;

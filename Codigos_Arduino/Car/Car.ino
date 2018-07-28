@@ -116,12 +116,7 @@ void setup() {
   imu_sensor= new mpu_9250_lite();
 
   
- /* Serial.println("Configurando controlador");
-  controller= new control_system(); 
-   Serial.print("freeMemory()=");
-    Serial.println(freeMemory());
 
-  controller->clean_points();*/
 
   Serial.println("Listo.");
      Serial.print("freeMemory()=");
@@ -140,9 +135,6 @@ void loop() {
 //  Serial.println("Actualizo posicion");
   update_car_estimated_position();
   
-  // Obtengo datos del radar  
- // Serial.println("Obtengo datos radar");
-  
 
   // Obtengo datos del controlador  
   //Serial.println("Obtengo datos del controlador");
@@ -155,31 +147,15 @@ void loop() {
     control_orders=control_com->get_controller_data(); 
     last_update=now;
   }
-//  Serial.print(motor->read_speed());
-//  Serial.print("\t");
-//  Serial.print(control_orders.steering);
-//  Serial.println("\t");
-//  for (int k=0;k<5;k++){
-//    Serial.print(sensor_measures.distance[k]);
-//    Serial.print("\t");
-//  }
-//  Serial.print(sensor_measures.sensor_angle);
-//  Serial.print("\t");
-//  Serial.print(sensor_measures.time_stamp);
-//  Serial.println("");
-  
-  //Serial.print("freeMemory()=");
-  //Serial.println(freeMemory());
+
 
   //Actualizo el controlador
   coordinates carpos;
   carpos.x=(float)car.x_pos;
   carpos.y=(float)car.y_pos;
   carpos.theta=car.theta;
-  //controller->update_control(carpos);
-  //Serial.println(control_orders.turret_angle);
+
   if (activated_controller){
- //   commands control_commands=controller->get_commands();
     Serial.println(control_orders.speed);
     if( control_orders.speed>-500 && control_orders.speed< 500){
       motor->set_speed(control_orders.speed);
@@ -191,17 +167,7 @@ void loop() {
     }
   }
 
-  // Verifico que no se este chocando?mm esto se borra
-  //Serial.println("Verifico choque");
-  /*if (sensor_measures.distance[2]<300 && brake==false){
-    Serial.println("Freno");
-    motor->brake();    
-    brake=true;
-  }else if(sensor_measures.distance[2]>400 && brake==true){
-    Serial.println("Suelto freno");
-    brake=false;
-  }
-*/
+
   // Actualizo el controlador del motor  
   //Serial.println("Actualizo controlador motor");
   motor->update_brushless();

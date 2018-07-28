@@ -26,18 +26,7 @@ typedef union I2C_command_sensor_packet_receive{
   uint8_t I2C_command_sensor_bytes[sizeof(I2C_command_sensor_receive)];
 };  
 
-/*///////// Paragolpe
 
-typedef struct I2C_command_paragolpe_receive
-{
-  unsigned char command;
-  float data;
-};
-
-typedef union I2C_command_paragolpe_packet_receive{
-  I2C_command_paragolpe_receive message;
-  uint8_t I2C_command_paragolpe_bytes[sizeof(I2C_command_paragolpe_receive)];
-};  */
 
 ///////// Controlador
 
@@ -78,21 +67,6 @@ typedef union I2C_sensor_request{
   sensor_data_bytes data_splitted;
 };
 
-/*////////// paragolpe
-typedef struct paragolpe_data{
-  int16_t distance[3]; // mm
-  bool bumper[2];
-};
-
-typedef struct paragolpe_data_bytes{
-  uint8_t perbyte[sizeof(paragolpe_data)];
-};
-
-typedef union I2C_paragolpe_request{
-  paragolpe_data data_formatted;
-  paragolpe_data_bytes data_splitted;
-};
-*/
 
 //////////controlador
 typedef struct controller_data{
@@ -122,9 +96,6 @@ private:
     I2C_command_sensor_packet_receive out_com;      // es el paquete que corresponde a los comandos que el auto le envia al radar
     I2C_sensor_request outgoing;  // es la que se envia del radar al auto con los datos de los sensores
 
-    //I2C_paragolpe_receive incoming_paragolpe;  // es el que recibe el auto con los datos de los sensores
-    //I2C_command_paragolpe_packet_receive out_com_paragolpe;      // es el paquete que corresponde a los comandos que el auto le envia al radar
-    //I2C_paragolpe_request outgoing_paragolpe;  // es la que se envia del radar al auto con los datos de los sensores
 
     I2C_controller_receive incoming_controller;  // es el que recibe el auto con las ordenes del controlador
     I2C_command_controller_packet_receive out_car_data;      // es el paquete que corresponde a los datos que el auto le envia al controlador
@@ -152,14 +123,10 @@ private:
     sensor_data I2C_communication::get_sensor_data(unsigned char ID);
     sensor_data I2C_communication::get_sensor_data();
 
-    //paragolpe_data I2C_communication::get_paragolpe_data(unsigned char ID);
-    //paragolpe_data I2C_communication::get_paragolpe_data();
-
     controller_data I2C_communication::get_controller_data(unsigned char ID);
     controller_data I2C_communication::get_controller_data();
 
     void I2C_communication::update_I2C_sensordata(I2C_sensor_request data);
-    //void I2C_communication::update_I2C_paragolpedata(I2C_paragolpe_request data);
     void I2C_communication::update_I2C_controllerdata(I2C_controller_request data);
 
     void I2C_communication::read_callback(void);

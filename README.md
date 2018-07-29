@@ -1,4 +1,4 @@
-# plataforma_autonoma
+# Plataforma-inteligente
 <h1>PLATAFORMA INTELIGENTE PARA DESARROLLO DE VEHÍCULOS MÓVILES AUTÓNOMOS</h1>
 
 ![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/photo_2018-07-25_19-28-11.jpg?raw=true)

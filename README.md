@@ -18,6 +18,28 @@ Todas las piezas impresas tienen una codificacion en el nombre que indica como s
 
 Esto indica que es una pieza impresa en 3D con capa de 0.4 mm pared de 2 mm y relleno de 50%.
 
+<h4>Tracción</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-T04.jpg?raw=true)
+<h4>Dirección</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-D04.jpg?raw=true)
+<h4>Chasis</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-CH04.jpg?raw=true)
+<h4>Radar</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-R02.jpg?raw=true)
+<h4>Control</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-CT01.jpg?raw=true)
+<h4>Remoto</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-R01.jpg?raw=true)
+<h4>Ensamble completo</h4>
+
+![alt text](https://github.com/alanjurnetb/plataforma_autonoma/blob/master/Planos/Imagenes/P01-02.jpg?raw=true)
+<h3>Electrónica</h3>
 
 La electrónica esta desarrollada en base a modulos comerciales y no es necesario fabricar ningun pcb. Esta versión fue fabricada utilziando placas multiperforadas y componentes básicos como conectores.
 
